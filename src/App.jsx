@@ -3,9 +3,9 @@ import { TemperatureCalculator } from "./components/TemperatureCalculator";
 
 const App = () => {
   return (
-    <div className="App bg-gray-800">
+    <main className="App bg-gray-800">
       <TemperatureCalculator />
-    </div>
+    </main>
   );
 };
 
