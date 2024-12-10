@@ -1,24 +1,66 @@
 import React, { useState } from "react";
 
-export const TemperatureCalculator = () => {
-  const [celsius, setCelsius] = useState("");
-  const [fahrenheit, setFahrenheit] = useState("");
+const convertTemperature = (value, fromUnit, toUnit) => {
+  if (value === "" || isNaN(value)) return "";
 
-  const handleCelsiusChange = (e) => {
+  const temp = parseFloat(value);
+
+  // Convert from the input unit to Celsius
+  let celsius;
+  switch (fromUnit) {
+    case "Celsius":
+      celsius = temp;
+      break;
+    case "Fahrenheit":
+      celsius = (temp - 32) * (5 / 9);
+      break;
+    case "Kelvin":
+      celsius = temp - 273.15;
+      break;
+    default:
+      return "";
+  }
+
+  // Convert from Celsius to the output unit
+  switch (toUnit) {
+    case "Celsius":
+      return celsius;
+    case "Fahrenheit":
+      return (celsius * 9) / 5 + 32;
+    case "Kelvin":
+      return celsius + 273.15;
+    default:
+      return "";
+  }
+};
+
+export const TemperatureCalculator = () => {
+  const [inputValue, setInputValue] = useState("");
+  const [inputUnit, setInputUnit] = useState("Celsius");
+  const [outputUnit, setOutputUnit] = useState("Fahrenheit");
+  const [result, setResult] = useState("");
+
+  const handleInputChange = (e) => {
     const value = e.target.value;
-    setCelsius(value);
-    setFahrenheit(value !== "" ? (value * 9) / 5 + 32 : "");
+    setInputValue(value);
+    setResult(convertTemperature(value, inputUnit, outputUnit));
   };
 
-  const handleFahrenheitChange = (e) => {
+  const handleInputUnitChange = (e) => {
     const value = e.target.value;
-    setFahrenheit(value);
-    setCelsius(value !== "" ? ((value - 32) * 5) / 9 : "");
+    setInputUnit(value);
+    setResult(convertTemperature(inputValue, value, outputUnit));
+  };
+
+  const handleOutputUnitChange = (e) => {
+    const value = e.target.value;
+    setOutputUnit(value);
+    setResult(convertTemperature(inputValue, inputUnit, value));
   };
 
   const resetFields = () => {
-    setCelsius("");
-    setFahrenheit("");
+    setInputValue("");
+    setResult("");
   };
 
   return (
@@ -28,25 +70,52 @@ export const TemperatureCalculator = () => {
       </h1>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Celsius
+          Starting Value
         </label>
         <input
           type="number"
-          value={celsius}
-          onChange={handleCelsiusChange}
-          placeholder="Enter Celsius"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Enter value"
           className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200"
         />
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Fahrenheit
+          Starting Unit
+        </label>
+        <select
+          value={inputUnit}
+          onChange={handleInputUnitChange}
+          className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200"
+        >
+          <option value="Celsius">Celsius</option>
+          <option value="Fahrenheit">Fahrenheit</option>
+          <option value="Kelvin">Kelvin</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Result Unit
+        </label>
+        <select
+          value={outputUnit}
+          onChange={handleOutputUnitChange}
+          className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200"
+        >
+          <option value="Celsius">Celsius</option>
+          <option value="Fahrenheit">Fahrenheit</option>
+          <option value="Kelvin">Kelvin</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Result
         </label>
         <input
-          type="number"
-          value={fahrenheit}
-          onChange={handleFahrenheitChange}
-          placeholder="Enter Fahrenheit"
+          type="text"
+          value={result}
+          readOnly
           className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-200"
         />
       </div>
