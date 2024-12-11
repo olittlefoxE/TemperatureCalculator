@@ -1,3 +1,4 @@
+// TemperatureCalculator/src/App.jsx
 import React from "react";
 import { TemperatureCalculator } from "./components/TemperatureCalculator";
 
